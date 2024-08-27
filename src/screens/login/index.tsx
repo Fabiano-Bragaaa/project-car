@@ -9,7 +9,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "@services/index";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { Ring } from "@uiball/loaders";
 
 const schema = z.object({
   email: z
@@ -22,6 +24,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function Login() {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigate();
   const {
     register,
@@ -33,14 +36,16 @@ export function Login() {
   });
 
   function onSubmit({ email, password }: FormData) {
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
-        console.log("logado com sucesso");
-        console.log(user.user);
+        setLoading(false);
+        toast.success(`Seja bem-vindo novamente, ${user.user.displayName}`);
 
         navigation("/dashboard", { replace: true });
       })
       .catch((error) => {
+        setLoading(false);
         console.log("erro ao logar", error);
       });
   }
@@ -86,7 +91,13 @@ export function Login() {
             type="submit"
             className="bg-zinc-900 w-full rounded-md text-white h-10 font-medium"
           >
-            Acessar
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <Ring size={22} color="#fff" lineWeight={4} speed={2} />
+              </div>
+            ) : (
+              "Acessar"
+            )}
           </button>
         </form>
         <Link to={"/register"} className="text-center">

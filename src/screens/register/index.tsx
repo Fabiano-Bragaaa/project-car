@@ -1,10 +1,12 @@
 import logoImg from "@assets/logo.svg";
 import { Container } from "@components/container";
 import { Input } from "@components/input";
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { Ring } from "@uiball/loaders";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { auth } from "@services/index";
@@ -13,8 +15,9 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   name: z.string().nonempty("O campo é obrigatório!"),
@@ -31,6 +34,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function Register() {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigate();
 
   const { handleInfoUser } = useContext(AuthContext);
@@ -44,6 +48,7 @@ export function Register() {
   });
 
   async function onSubmit({ email, password, name }: FormData) {
+    setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (user) => {
         await updateProfile(user.user, {
@@ -51,11 +56,13 @@ export function Register() {
         });
 
         handleInfoUser({ email, name, uid: user.user.uid });
-        console.log("cadastrado com sucesso!");
+        setLoading(false);
+        toast.success("cadastrado com sucesso!");
         navigation("/dashboard", { replace: true });
       })
       .catch((error) => {
         console.log("Erro ao cadastrar usuario.", error);
+        setLoading(false);
       });
   }
 
@@ -110,7 +117,13 @@ export function Register() {
             type="submit"
             className="bg-zinc-900 w-full rounded-md text-white h-10 font-medium"
           >
-            Cadastrar
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <Ring size={22} color="#fff" lineWeight={4} speed={2} />
+              </div>
+            ) : (
+              "Cadastrar"
+            )}
           </button>
         </form>
         <Link to={"/login"}>Já possuio uma conta? Faça um login</Link>
