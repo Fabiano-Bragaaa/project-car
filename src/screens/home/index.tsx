@@ -1,6 +1,57 @@
 import { Container } from "@components/container";
+import { db } from "@services/index";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+type Props = {
+  id: string;
+  name: string;
+  year: string;
+  uid: string;
+  price: string | number;
+  city: string;
+  km: string;
+  images: CarImagesProps[];
+};
+
+type CarImagesProps = {
+  name: string;
+  uid: string;
+  url: string;
+};
 
 export function Home() {
+  const [cars, setCars] = useState<Props[]>([]);
+
+  useEffect(() => {
+    function loadingCars() {
+      const carsRef = collection(db, "cars");
+
+      const queryRef = query(carsRef, orderBy("created", "desc"));
+      getDocs(queryRef).then((snapshot) => {
+        let listCars = [] as Props[];
+
+        snapshot.forEach((doc) => {
+          listCars.push({
+            id: doc.id,
+            name: doc.data().name,
+            year: doc.data().year,
+            km: doc.data().km,
+            city: doc.data().city,
+            price: doc.data().price,
+            images: doc.data().images,
+            uid: doc.data().uid,
+          });
+        });
+
+        setCars(listCars);
+      });
+    }
+
+    loadingCars();
+  }, []);
+
   return (
     <Container>
       <section className="bg-white p-4 rounded-lg w-full max-w-3xl flex mx-auto justify-center items-center gap-2 ">
@@ -17,27 +68,31 @@ export function Home() {
       </h1>
 
       <main className="grid grid-cols-1 gap-6 md: grid-cols-2 lg: grid-cols-3">
-        <section className="w-full bg-white rounded-lg">
-          <img
-            src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSyQgBF3LZCSn5154faBCpi0lQGNxrR1nv24ioC-XpJUMjM0YWBcoqel7UTmsXNx5I-boLrUAf12EyqZ-EGzOPE8u6XW1t9y5HGEscysw"
-            alt="carro"
-            className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all"
-          />
-          <p className="font-bold mt-1 mb-2 px-2">BMW 320i</p>
-          <div className="flex flex-col px-2">
-            <span className="text-zinc-700 mb-6">
-              Ano 2016/2016 | 23.000 km
-            </span>
-            <strong className="text-black font-medium text-xl">
-              R$ 190.000
-            </strong>
-          </div>
-          <div className="w-full h-px bg-slate-200 my-2"></div>
+        {cars.map((car) => (
+          <Link to={`/car/${car.id}`} key={car.id}>
+            <section className="w-full bg-white rounded-lg">
+              <img
+                src={car.images[0].url}
+                alt="carro"
+                className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all"
+              />
+              <p className="font-bold mt-1 mb-2 px-2">{car.name}</p>
+              <div className="flex flex-col px-2">
+                <span className="text-zinc-700 mb-6">
+                  Ano {car.year} | {car.km} km
+                </span>
+                <strong className="text-black font-medium text-xl">
+                  R$ {car.price}
+                </strong>
+              </div>
+              <div className="w-full h-px bg-slate-200 my-2"></div>
 
-          <div className="px-2 pb-2">
-            <span className="text-zinc-700">Campo Grande - MS</span>
-          </div>
-        </section>
+              <div className="px-2 pb-2">
+                <span className="text-zinc-700">{car.city}</span>
+              </div>
+            </section>
+          </Link>
+        ))}
       </main>
     </Container>
   );
