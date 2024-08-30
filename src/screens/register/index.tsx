@@ -58,7 +58,7 @@ export function Register() {
         handleInfoUser({ email, name, uid: user.user.uid });
         setLoading(false);
         toast.success("cadastrado com sucesso!");
-        navigation("/dashboard", { replace: true });
+        navigation("/", { replace: true });
       })
       .catch((error) => {
         console.log("Erro ao cadastrar usuario.", error);

@@ -1,10 +1,11 @@
 import { Container } from "@components/container";
 import { db } from "@services/index";
+import { Ring } from "@uiball/loaders";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-type Props = {
+export type Props = {
   id: string;
   name: string;
   year: string;
@@ -23,6 +24,7 @@ type CarImagesProps = {
 
 export function Home() {
   const [cars, setCars] = useState<Props[]>([]);
+  const [loadingImages, setLoadingImages] = useState<string[]>([]);
 
   useEffect(() => {
     function loadingCars() {
@@ -52,6 +54,10 @@ export function Home() {
     loadingCars();
   }, []);
 
+  function handleImageLoading(id: string) {
+    setLoadingImages((imagesLoaded) => [...imagesLoaded, id]);
+  }
+
   return (
     <Container>
       <section className="bg-white p-4 rounded-lg w-full max-w-3xl flex mx-auto justify-center items-center gap-2 ">
@@ -67,13 +73,27 @@ export function Home() {
         Carros novos e usados em todo o Brasil
       </h1>
 
-      <main className="grid grid-cols-1 gap-6 md: grid-cols-2 lg: grid-cols-3">
+      <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {cars.map((car) => (
           <Link to={`/car/${car.id}`} key={car.id}>
             <section className="w-full bg-white rounded-lg">
+              <div
+                className="w-full h-72 rounded-lg bg-slate-200"
+                style={{
+                  display: loadingImages.includes(car.id) ? "none" : "block",
+                }}
+              >
+                <div className="w-full h-72 flex items-center justify-center">
+                  <Ring size={22} color="#000" lineWeight={4} speed={2} />
+                </div>
+              </div>
               <img
                 src={car.images[0].url}
                 alt="carro"
+                onLoad={() => handleImageLoading(car.id)}
+                style={{
+                  display: loadingImages.includes(car.id) ? "block" : "none",
+                }}
                 className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all"
               />
               <p className="font-bold mt-1 mb-2 px-2">{car.name}</p>
