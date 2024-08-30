@@ -1,7 +1,18 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "jsx": "react-jsx", // ou "react" dependendo da versão do React que você está usando
+    "baseUrl": "./",
+    "paths": {
+      "@dtos/*": ["src/dtos/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@screens/*": ["src/screens/*"],
+      "@storage/*": ["src/storage/*"],
+      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@routes/*": ["src/routes/*"]
+    }
+  }
 }
