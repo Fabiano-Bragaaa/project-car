@@ -7,4 +7,7 @@ export default defineConfig({
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"], // Adicione as extensões aqui
   },
+  server: {
+    port: 3333,
+  },
 });
