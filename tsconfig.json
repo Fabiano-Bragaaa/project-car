@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx", // ou "react" dependendo da versão do React que você está usando
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Bundler",
+    "target": "es6",
+    "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
       "@dtos/*": ["src/dtos/*"],
@@ -13,6 +18,13 @@
       "@hooks/*": ["src/hooks/*"],
       "@contexts/*": ["src/contexts/*"],
       "@routes/*": ["src/routes/*"]
-    }
-  }
+    },
+    "noEmit": true, // Não emite arquivos .js
+    "skipLibCheck": true // Opcional: Ignora verificação de arquivos .d.ts para acelerar a compilação
+  },
+  "exclude": [
+    "node_modules",
+    "dist", // Exclui a pasta de saída do build
+    "**/*.js" // Exclui arquivos JS gerados
+  ]
 }

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "rimraf dist",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -21,6 +22,7 @@
     "react-icons": "^5.3.0",
     "react-router-dom": "^6.26.1",
     "react-toastify": "^10.0.5",
+    "rollup": "^4.1.0",
     "sort-by": "^1.2.0",
     "swiper": "^11.1.11",
     "uuid": "^10.0.0",
@@ -30,18 +32,20 @@
     "@eslint/js": "^9.9.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/rollup": "^0.54.0",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "postcss": "^8.4.41",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vite-tsconfig-paths": "^5.0.1"
   }
 }
