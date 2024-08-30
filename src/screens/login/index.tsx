@@ -42,7 +42,7 @@ export function Login() {
         setLoading(false);
         toast.success(`Seja bem-vindo novamente, ${user.user.displayName}`);
 
-        navigation("/dashboard", { replace: true });
+        navigation("/", { replace: true });
       })
       .catch((error) => {
         setLoading(false);
