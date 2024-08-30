@@ -3,7 +3,7 @@ import { Props } from "@screens/home";
 import { db } from "@services/index";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -23,6 +23,8 @@ export function CarDetails() {
 
   const { id } = useParams();
 
+  const navigation = useNavigate();
+
   useEffect(() => {
     async function loadingCar() {
       if (!id) {
@@ -32,6 +34,9 @@ export function CarDetails() {
       const docRef = doc(db, "cars", id);
 
       getDoc(docRef).then((snapshot) => {
+        if (!snapshot.data()) {
+          navigation("/");
+        }
         setCar({
           id: snapshot.id,
           name: snapshot.data()?.name,
@@ -122,7 +127,11 @@ export function CarDetails() {
           <strong>Whatsapp</strong>
           <p>{car?.whatsapp}</p>
 
-          <a className="bg-green-500 w-full text-white flex items-center justify-center gap-2 my-6 h-11 text-xl rounded-lg font-medium cursor-pointer">
+          <a
+            target="_blank"
+            href={`https://api.whatsapp.com/send?phone=${car?.whatsapp}&text=Olá, vi o anuncio sobre o ${car?.name} e queria mais detalhes.`}
+            className="bg-green-500 w-full text-white flex items-center justify-center gap-2 my-6 h-11 text-xl rounded-lg font-medium cursor-pointer"
+          >
             Conversar com o vendedor
             <FaWhatsapp size={26} color="#fff" />
           </a>

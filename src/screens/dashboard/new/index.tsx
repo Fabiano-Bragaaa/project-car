@@ -23,6 +23,7 @@ import { db, storage } from "@services/index";
 import { addDoc, collection } from "firebase/firestore";
 
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object(
   {
@@ -36,7 +37,7 @@ const schema = z.object(
     whatsapp: z
       .string()
       .min(1, "O telefone é obrigatório")
-      .refine((value) => /^(\d{10,12})$/.test(value)),
+      .refine((value) => /^(\d{10,15})$/.test(value)),
   },
   {
     message: "Numero de telefone inválido",
@@ -57,6 +58,7 @@ export function New() {
   const [loading, setLoading] = useState(false);
 
   const { user } = useContext(AuthContext);
+  const navigation = useNavigate();
 
   const {
     register,
@@ -138,8 +140,9 @@ export function New() {
     whatsapp,
     year,
   }: FormProps) {
-    if (carImages.length === 0) {
-      toast.error("envie alguma imagem desse carro");
+    if (carImages.length <= 1) {
+      toast.error("envie pelo menos duas imagem desse carro");
+      return;
     }
 
     const carListImages = carImages.map((car) => {
@@ -153,7 +156,7 @@ export function New() {
     setLoading(true);
 
     addDoc(collection(db, "cars"), {
-      name,
+      name: name.toUpperCase(),
       city,
       description,
       km,
@@ -171,6 +174,7 @@ export function New() {
         setLoading(false);
         reset();
         setCarImages([]);
+        navigation("/dashboard");
       })
       .catch((err) => {
         console.log(err);
@@ -269,7 +273,7 @@ export function New() {
                 register={register}
                 name="whatsapp"
                 error={errors.whatsapp?.message}
-                placeholder="Ex: 85992189912"
+                placeholder="Ex:5585992189912"
               />
             </div>
 

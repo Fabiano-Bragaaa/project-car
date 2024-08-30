@@ -72,12 +72,12 @@ export function Dashboard() {
       const imageRef = ref(storage, imagePath);
       try {
         await deleteObject(imageRef);
-        setCars(cars.filter((car) => car.id !== itemCar.id));
-        toast.success("Carro deletado com sucesso.");
       } catch (err) {
         console.log("erro ao excluir a imagem", err);
       }
     });
+    setCars(cars.filter((car) => car.id !== itemCar.id));
+    toast.success("Carro deletado com sucesso.");
   }
 
   return (
@@ -106,7 +106,7 @@ export function Dashboard() {
               </div>
             </div>
             <img
-              src={car.images[0].url}
+              src={car.images[0]?.url}
               alt="carro"
               onLoad={() => handleImageLoading(car.id)}
               style={{
